@@ -11,8 +11,8 @@ You MUST set at least the following variables before use:
 
 	BACKUP_BASE_DIR="/backup/BACKUP"
 	DIRS_TO_BACKUP=('/home'
-			  '/etc'
-			)
+	 '/etc'
+	)
 			
 These variables are located after the Licence message, in the "CONFIG" section of the script
 
