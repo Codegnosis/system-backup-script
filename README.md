@@ -5,6 +5,17 @@ A simple, configurable bash script which backs up specified directories to tar.g
 
 It is also possible to list directories which can be rsync'd to the backup destination.
 
+CONFIGURATION
+
+You MUST set at least the following variables before use:
+
+	BACKUP_BASE_DIR="/backup/BACKUP"
+	DIRS_TO_BACKUP=('/home'
+			  '/etc'
+			)
+			
+These variables are located after the Licence message, in the "CONFIG" section of the script
+
 USAGE
 
 	To backup, run as root:
