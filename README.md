@@ -7,7 +7,7 @@ USAGE
 
 	To backup, run as root:
 
-	sudo /home/tenzin/opt/Paul's Backup Script/backup.sh [options]
+	sudo ./backup.sh [options]
 
 	Note: -h and -q options do not require root.
 
@@ -44,21 +44,21 @@ EXAMPLES
 	Example 1
 
 	Run with default settings - will backup to 
-	/media/tenzin/BACKUP_2TB_1/BACKUP/1-Monday with gzip compression 9 
+	/backup/1-Monday with gzip compression 9 
 	and vebose mode off:
 
-	$ sudo /home/tenzin/opt/Paul's Backup Script/backup.sh
+	$ sudo ./backup.sh
 
 	Example 2
 
-	Backup to /media/tenzin/BACKUP_2TB_1/BACKUP/latest with compression level 5
+	Backup to /backup/latest with compression level 5
 	using 2 CPU Cores:
 
-	$ sudo /home/tenzin/opt/Paul's Backup Script/backup.sh -d latest -c 5 -p 2
+	$ sudo ./backup.sh -d latest -c 5 -p 2
 
 	Example 3
 
 	Run in vervose mode with default settings:
 
-	$ sudo /home/tenzin/opt/Paul's Backup Script/backup.sh -v
+	$ sudo ./backup.sh -v
 
