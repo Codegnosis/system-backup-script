@@ -3,6 +3,8 @@ system-backup-script
 
 A simple, configurable bash script which backs up specified directories to tar.gz.
 
+It is also possible to list directories which can be rsync'd to the backup destination.
+
 USAGE
 
 	To backup, run as root:
