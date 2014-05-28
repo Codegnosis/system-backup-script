@@ -82,6 +82,7 @@ RSYNC_BIN="/usr/bin/rsync"
 
 # Output Help...
 HELP_SUB_DIR=`date "+%u-%A"`
+TOUT=$(date "+%T %N")
 BOLD=$(tput bold) # bold
 NORM=$(tput sgr0) # turn off formatting
 U=$(tput smul) # start underline
@@ -274,10 +275,10 @@ fi
 #####################
 
 if [ ! -d "$BACKUP_BASE_DIR" ]; then
-    echo "Can't find $BACKUP_BASE_DIR. Check it exists and is mounted."
+    echo [$(date "+%T")] "Can't find $BACKUP_BASE_DIR. Check it exists and is mounted."
     exit 1
 else
-    echo "Found $BACKUP_BASE_DIR. Backup Drive Mounted"
+    echo [$(date "+%T")] "Found $BACKUP_BASE_DIR. Backup Drive Mounted"
 fi
 
 ##################
@@ -285,9 +286,9 @@ fi
 ##################
 
 if $VERBOSE; then
-    echo "Verbose Mode"
+    echo [$(date "+%T")] "Verbose Mode"
 else
-    echo "Verbose Off"
+    echo [$(date "+%T")] "Verbose Off"
 fi
 
 ###############################
@@ -296,17 +297,17 @@ fi
 
 # Set real Backup DIR for this session
 BACKUP_DIR="$BACKUP_BASE_DIR/tarballs/$SUB_DIR"
-echo "Root Tarball Dir: $BACKUP_DIR"
-echo "Root rsync Dir: $BACKUP_DIR/rsync"
+echo [$(date "+%T")] "Root Tarball Dir: $BACKUP_DIR"
+echo [$(date "+%T")] "Root rsync Dir: $BACKUP_BASE_DIR/rsync"
 
 # Check real Backup Dir exists. If not, create it
 
 if [ ! -d "$BACKUP_DIR" ]; then
-    echo "Can't find $BACKUP_DIR. Create it."
-    echo "mkdir -p $BACKUP_DIR"
+    echo [$(date "+%T")] "Can't find $BACKUP_DIR. Create it."
+    echo [$(date "+%T")] "mkdir -p $BACKUP_DIR"
     mkdir -p $BACKUP_DIR
 else
-    echo "Found $BACKUP_DIR"
+    echo [$(date "+%T")] "Found $BACKUP_DIR"
 fi
 
 #####################
@@ -317,10 +318,14 @@ COMP_CMD="gzip -$COMP_LEVEL"
 
 if command -v pigz >/dev/null 2>&1; then
     COMP_CMD="pigz -$COMP_LEVEL -p$NO_CORES"
-    echo "pigz installed. Use pigz for compression"
+    echo [$(date "+%T")] "pigz installed. Use pigz for compression"
+	echo [$(date "+%T")] "Use $NO_CORES Cores for compression"
+
 else
-    echo >&2 "pigz not installed. Use gzip for compression"
+    echo [$(date "+%T")] "pigz not installed. Use gzip for compression"
 fi
+
+echo [$(date "+%T")] "Compression level: $COMP_LEVEL"
 
 echo ""
 echo "----------------------"
@@ -332,7 +337,7 @@ echo "----------------------"
 #####################
 
 if [ ${#DIRS_TO_BACKUP[@]} -gt 0 ]; then
-    echo "Directories for backup declared"
+    echo [$(date "+%T")] "Directories for backup declared"
     
     for i in ${DIRS_TO_BACKUP[@]}; do
         BU=${i%/} # remove trailing slash
@@ -343,18 +348,18 @@ if [ ${#DIRS_TO_BACKUP[@]} -gt 0 ]; then
         echo "-----------------------------"
         echo "BACKING UP $BU"
         echo ""
-        echo "Check for old backup file:"
+        echo [$(date "+%T")] "Check for old backup file:"
 
         if [[ ! -f $BACKUP_DIR/$TGZ_FILE ]]; then
-            echo "Old backup file does not exist. Continue..."
+            echo [$(date "+%T")] "Old backup file does not exist. Continue..."
         else
-            echo "Old backup file exists"
+            echo [$(date "+%T")] "Old backup file exists"
             echo "rm $BACKUP_DIR/$TGZ_FILE"
             rm $BACKUP_DIR/$TGZ_FILE
             echo ""
         fi
 
-        echo "Please wait... calculating time to complete"
+        echo [$(date "+%T")] "Please wait... calculating time to complete"
 
         if $VERBOSE; then
             echo "tar cpv $BU | $COMP_CMD > $BACKUP_DIR/$TGZ_FILE"
@@ -365,7 +370,7 @@ if [ ${#DIRS_TO_BACKUP[@]} -gt 0 ]; then
         fi
     done
 else
-    echo "Nothing to backup!"
+    echo [$(date "+%T")] "Nothing to backup!"
 fi
 
 #####################
@@ -378,30 +383,30 @@ echo "RUN rsync"
 echo "----------------------"
 
 if [ ${#DIRS_TO_RSYNC[@]} -gt 0 ]; then
-    echo "Directories for rsync declared..."
+    echo [$(date "+%T")] "Directories for rsync declared..."
     
-    echo "Check rsync is installed"
+    echo [$(date "+%T")] "Check rsync is installed"
 
     if command -v $RSYNC_BIN >/dev/null 2>&1; then
-        echo >&2 "rsync installed. OK"
+        echo [$(date "+%T")] "rsync installed. OK"
 
         if $RSYNC_KEEP; then
-            echo "rsync keep removed files at destination"
+            echo [$(date "+%T")] "rsync keep removed files at destination"
         else
-            echo "rsync delete removed files from destination"
+            echo [$(date "+%T")] "rsync delete removed files from destination"
         fi
 
         RSYNC_VER=`$RSYNC_BIN --version | head -c20 | cut -c16-20`
         HAS_LATEST_RSYNC=false
 
-        echo "Installed rsync Version:$RSYNC_VER"
-        echo "Required for latest features:$RSYNC_LATEST"
+        echo [$(date "+%T")] "Installed rsync Version:$RSYNC_VER"
+        echo [$(date "+%T")] "Required for latest features:$RSYNC_LATEST"
 
         if [[ "$RSYNC_VER" > "$RSYNC_LATEST" ]] || [[ "$RSYNC_VER" = "$RSYNC_LATEST" ]]; then
-            echo "rsync $RSYNC_VER is OK"
+            echo [$(date "+%T")] "rsync $RSYNC_VER is OK"
             HAS_LATEST_RSYNC=true
         else
-            echo "rsync $RSYNC_VER installed. Disable newer rsync features"
+            echo [$(date "+%T")] "rsync $RSYNC_VER installed. Disable newer rsync features"
         fi
 
         VERBOSEFLAG="" # Default off
@@ -428,25 +433,25 @@ if [ ${#DIRS_TO_RSYNC[@]} -gt 0 ]; then
             echo "rsync $RS"
     
             echo ""
-            echo "Check source dir format"
+            echo [$(date "+%T")] "Check source dir format"
             echo ""
 
             case "$RS" in
                 */)
-                    echo "has trailing slash"
+                    echo [$(date "+%T")] "has trailing slash"
                     ;;
                 *)
-                    echo "doesn't have a slash. Add trailing slash"
+                    echo [$(date "+%T")] "does not have a slash. Add trailing slash"
                     RS="$RS/"
                     ;;
             esac
 
             if [ ! -d "$BACKUP_BASE_DIR/rsync$RS" ]; then
-                echo "Can't find $BACKUP_BASE_DIR/rsync$RS. Create it."
+                echo [$(date "+%T")] "Can't find $BACKUP_BASE_DIR/rsync$RS. Create it."
                 echo "mkdir -p $BACKUP_BASE_DIR/rsync$RS"
                 mkdir -p $BACKUP_BASE_DIR/rsync$RS
             else
-                echo "Found $BACKUP_BASE_DIR/rsync$RS"
+                echo [$(date "+%T")] "Found $BACKUP_BASE_DIR/rsync$RS"
             fi
 
             echo "$RSYNC_BIN -r -t $VERBOSEFLAG $DELFLAG --links --size-only -s $RS $BACKUP_BASE_DIR/rsync$RS"
@@ -454,10 +459,10 @@ if [ ${#DIRS_TO_RSYNC[@]} -gt 0 ]; then
 
         done
     else
-        echo >&2 "rsync does not seem to be installed. Please install rsync"
+        echo [$(date "+%T")] "rsync does not seem to be installed. Please install rsync"
     fi
 else
-    echo "Nothing to rsync!"
+    echo [$(date "+%T")] "Nothing to rsync!"
 fi
 
 #####################
@@ -495,7 +500,7 @@ echo "BACK UP COMPLETE"
 echo "----------------------"
 
 echo ""
-echo "Latest Backup info saved to: $BACKUP_BASE_DIR/LASTBACKUP"
+echo [$(date "+%T")] "Latest Backup info saved to: $BACKUP_BASE_DIR/LASTBACKUP"
 echo ""
 
 printf 'Elapsed time: %s\n' $(timer $t)
