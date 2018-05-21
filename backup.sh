@@ -5,7 +5,7 @@
 # description   	: Backup a sepcified list of directories to a designated
 #			  location in tar.gz format. rsync a list of specified
 #			  directories to a designated location
-# author		: Paul Hodgson (hodge@64bitjungle.com)
+# author		: Paul Hodgson (paul@codegnosis.co.uk)
 # date          	: 2014-05-25
 # version       	: 0.1   
 # usage			: root backup.sh
